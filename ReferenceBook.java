@@ -1,5 +1,7 @@
 package O_Exercise1;
 
+import java.util.ArrayList;
+
 abstract class Book {
     protected String id;
     protected String title;
@@ -11,16 +13,18 @@ abstract class Book {
         this.price = price;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public abstract double getAmount();
 
     public void display() {
-        System.out.println("ID: " + id);
-        System.out.println("Title: " + title);
-        System.out.println("Price: " + price);
+        System.out.println(id + " | " + title + " | " + price);
     }
 }
 
-public class ReferenceBook extends Book {
+class ReferenceBook extends Book {
     private double tax;
 
     public ReferenceBook(String id, String title, double price, double tax) {
@@ -36,12 +40,59 @@ public class ReferenceBook extends Book {
     @Override
     public void display() {
         super.display();
-        System.out.println("Tax: " + tax);
+        System.out.println("Tax: " + tax + " | Amount: " + getAmount());
+    }
+}
+
+public class BookList {
+    private ArrayList<Book> list = new ArrayList<>();
+
+    
+    public void add(Book b) {
+        list.add(b);
     }
 
+    // Find by id
+    public Book find(String id) {
+        for (Book b : list) {
+            if (b.getId().equals(id)) return b;
+        }
+        return null;
+    }
+
+    // Delete by id
+    public boolean delete(String id) {
+        Book b = find(id);
+        if (b != null) {
+            list.remove(b);
+            return true;
+        }
+        return false;
+    }
+
+    // Display all
+    public void displayAll() {
+        for (Book b : list) {
+            b.display();
+            System.out.println("-----");
+        }
+    }
+
+    // Main test
     public static void main(String[] args) {
-        ReferenceBook rb = new ReferenceBook("R01", "Dictionary", 100, 10);
-        rb.display();
-        System.out.println("Amount: " + rb.getAmount());
+        BookList bl = new BookList();
+
+        bl.add(new ReferenceBook("R1","Math Ref",100,10));
+        bl.add(new ReferenceBook("R2","Physics Ref",120,12));
+
+        bl.displayAll();
+
+        System.out.println("Find R1:");
+        Book f = bl.find("R1");
+        if (f != null) f.display();
+
+        bl.delete("R2");
+        System.out.println("After delete:");
+        bl.displayAll();
     }
 }
